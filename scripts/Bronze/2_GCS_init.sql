@@ -22,22 +22,24 @@ CREATE OR REPLACE FILE FORMAT DataWarehouse.BRONZE.csv_file_format
 -- CREATE Storage Init
 CREATE OR REPLACE STORAGE INTEGRATION gcs_init
     TYPE = EXTERNAL_STAGE
-    STORAGE_PROVIDER = GCS
+    STORAGE_PROVIDER = 'GCS'
     ENABLED = TRUE
-    STORAGE_ALLOWED_LOCATIONS = ('gcs://snowflake-store/CRM_data/source_crm', 'gcs://snowflake-store/ERP_data/source_erp')
+    STORAGE_ALLOWED_LOCATIONS = ('gcs://snowflake-store/',
+                                 'gcs://snowflake2/source_erp', 
+                                 'gcs://snowflake2/source_crm')
     COMMENT = 'Integration of GCS';
 
 DESC STORAGE INTEGRATION gcs_init;
 
 --Create Stage CRM
 CREATE OR REPLACE STAGE DATAWAREHOUSE.BRONZE.gcs_crm_stage
-    URL = 'gcs://snowflake-store/CRM_data/source_crm'
+    URL = 'gcs://snowflake2/source_crm'
     STORAGE_INTEGRATION = gcs_init
     FILE_FORMAT = DataWarehouse.BRONZE.csv_file_format;
 
 --Create Stage ERP
 CREATE OR REPLACE STAGE DATAWAREHOUSE.BRONZE.gcs_erp_stage
-    URL = 'gcs://snowflake-store/ERP_data/source_erp'
+    URL = 'gcs://snowflake2/source_erp'
     STORAGE_INTEGRATION = gcs_init
     FILE_FORMAT = DataWarehouse.BRONZE.csv_file_format;
 
@@ -54,3 +56,17 @@ CREATE OR REPLACE NOTIFICATION INTEGRATION gcs_notify_init
     COMMENT = 'Notification integration for GCS auto-ingest.';
 
 DESC NOTIFICATION INTEGRATION gcs_notify_init;
+
+
+-- Create Enternla Volume
+CREATE OR REPLACE EXTERNAL VOLUME gcs_iceberg_volume
+  STORAGE_LOCATIONS =
+    (
+      (
+        NAME = 'gcs-iceberg-storage-location'
+        STORAGE_PROVIDER = 'GCS'
+        STORAGE_BASE_URL = 'gcs://snowflake2/silver/'
+      )
+    );
+DESC EXTERNAL VOLUME gcs_iceberg_volume;
+
