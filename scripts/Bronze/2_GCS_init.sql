@@ -70,4 +70,3 @@ CREATE OR REPLACE EXTERNAL VOLUME gcs_iceberg_volume
     );
     
 DESC EXTERNAL VOLUME gcs_iceberg_volume;
-
