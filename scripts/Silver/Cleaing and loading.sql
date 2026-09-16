@@ -66,16 +66,94 @@ FROM
 
 -- Clean & Load CRM_SALES_DETAILS
 
+CREATE OR REPLACE DYNAMIC ICEBERG TABLE  DATAWAREHOUSE.SILVER.crm_sales_details
+    TARGET_LAG = '24 hours'
+    WAREHOUSE = COMPUTE_WH
+    EXTERNAL_VOLUME = 'gcs_iceberg_volume'
+    CATALOG = 'SNOWFLAKE'
+    BASE_LOCATION = 'crm/crm_sales_details'
+AS
 SELECT
-    sls_ord_num,
-    sls_prd_key,
+    TRIM(sls_ord_num) AS sls_ord_num,
+    TRIM(sls_prd_key) AS sls_prd_key,
     sls_cust_id,
-    sls_order_dt,
     sls_order_dt,
     sls_ship_dt,
     sls_due_dt,
-    sls_sales,
+    CASE 
+        WHEN sls_sales IS NULL OR sls_sales <=0 OR sls_sales != sls_quantity * ABS(sls_price)
+        THEN sls_quantity * ABS(sls_price)
+        ELSE sls_sales
+    END AS sls_sales,
     sls_quantity,
-    sls_price
+    CASE 
+        WHEN sls_price IS NULL OR sls_price <= 0
+        THEN sls_sales / NULLIF(sls_quantity, 0)
+        ELSE sls_price
+    END AS sls_price
 FROM
     DATAWAREHOUSE.BRONZE.CRM_SALES_DETAILS;
+
+
+--=== ERP
+
+-- Clean & Load ERP_CUST_AZ12
+
+CREATE OR REPLACE DYNAMIC ICEBERG TABLE  DATAWAREHOUSE.SILVER.erp_cust_az12
+    TARGET_LAG = '24 hours'
+    WAREHOUSE = COMPUTE_WH
+    EXTERNAL_VOLUME = 'gcs_iceberg_volume'
+    CATALOG = 'SNOWFLAKE'
+    BASE_LOCATION = 'erp/erp_cust_az12'
+AS
+SELECT
+    CASE 
+        WHEN cid LIKE 'NAS%' THEN SUBSTR(cid, 4, LENGTH(cid))
+        ELSE cid
+    END AS cid,
+    CASE 
+        WHEN bdate > CURRENT_DATE() THEN NULL
+        ELSE bdate
+    END AS bdate,
+    CASE 
+        WHEN UPPER(TRIM(gen)) IN ('F', 'FEMALE') THEN 'Female'
+        WHEN UPPER(TRIM(gen)) IN ('M', 'MALE') THEN 'Male'
+        ELSE 'n/a'
+    END AS gen
+FROM DATAWAREHOUSE.BRONZE.ERP_CUST_AZ12;
+
+
+-- Clean & Load ERP_LOC_A101
+
+CREATE OR REPLACE DYNAMIC ICEBERG TABLE  DATAWAREHOUSE.SILVER.erp_loc_a101
+    TARGET_LAG = '24 hours'
+    WAREHOUSE = COMPUTE_WH
+    EXTERNAL_VOLUME = 'gcs_iceberg_volume'
+    CATALOG = 'SNOWFLAKE'
+    BASE_LOCATION = 'erp/erp_loc_a101'
+AS
+SELECT
+    REPLACE(cid, '-', '') AS cid,
+    CASE
+        WHEN TRIM(cntry) = 'DE' THEN 'Germany'
+        WHEN TRIM(cntry) in('US', 'USA') THEN 'United State'
+        WHEN TRIM(cntry) = '' OR cntry IS NULL THEN 'n/a'
+        ELSE TRIM(cntry)
+    END AS cntry
+FROM DATAWAREHOUSE.BRONZE.ERP_LOC_A101;
+
+-- Clean & Load ERP_PX_CAT_G1V2
+
+CREATE OR REPLACE DYNAMIC ICEBERG TABLE  DATAWAREHOUSE.SILVER.erp_px_cat_g1v2
+    TARGET_LAG = '24 hours'
+    WAREHOUSE = COMPUTE_WH
+    EXTERNAL_VOLUME = 'gcs_iceberg_volume'
+    CATALOG = 'SNOWFLAKE'
+    BASE_LOCATION = 'erp/erp_px_cat_g1v2'
+AS
+SELECT 
+    id,
+    cat,
+    subcat,
+    maintenance,
+FROM DATAWAREHOUSE.BRONZE.ERP_PX_CAT_G1V2
