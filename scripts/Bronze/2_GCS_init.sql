@@ -24,9 +24,10 @@ CREATE OR REPLACE STORAGE INTEGRATION gcs_init
     TYPE = EXTERNAL_STAGE
     STORAGE_PROVIDER = 'GCS'
     ENABLED = TRUE
-    STORAGE_ALLOWED_LOCATIONS = ('gcs://snowflake-store/',
+    STORAGE_ALLOWED_LOCATIONS = (
                                  'gcs://snowflake2/source_erp', 
-                                 'gcs://snowflake2/source_crm')
+                                 'gcs://snowflake2/source_crm'
+                                 )
     COMMENT = 'Integration of GCS';
 
 DESC STORAGE INTEGRATION gcs_init;
@@ -57,7 +58,6 @@ CREATE OR REPLACE NOTIFICATION INTEGRATION gcs_notify_init
 
 DESC NOTIFICATION INTEGRATION gcs_notify_init;
 
-
 -- Create Enternla Volume
 CREATE OR REPLACE EXTERNAL VOLUME gcs_iceberg_volume
   STORAGE_LOCATIONS =
@@ -68,5 +68,6 @@ CREATE OR REPLACE EXTERNAL VOLUME gcs_iceberg_volume
         STORAGE_BASE_URL = 'gcs://snowflake2/silver/'
       )
     );
+    
 DESC EXTERNAL VOLUME gcs_iceberg_volume;
 

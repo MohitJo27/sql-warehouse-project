@@ -4,6 +4,8 @@ Purpose: Creating SnowPipe for Integration of Data from GCS
 ==============================================================
 */
 
+select CURRENT_REGION();
+
 USE DATAWAREHOUSE;
 USE SCHEMA BRONZE;
 
@@ -17,6 +19,7 @@ CREATE OR REPLACE PIPE DATAWAREHOUSE.BRONZE.PIPE_CRM_CUST_INFO
   PATTERN = '.*cust_info.*\.csv'
   MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE
   FILE_FORMAT = (FORMAT_NAME= DATAWAREHOUSE.BRONZE.CSV_FILE_FORMAT);
+
 
 -- 2. Create Snowpipe for CRM Product Info
 CREATE OR REPLACE PIPE DATAWAREHOUSE.BRONZE.PIPE_CRM_PRD_INFO
