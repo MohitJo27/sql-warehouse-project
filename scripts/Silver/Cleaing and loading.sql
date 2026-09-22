@@ -9,7 +9,7 @@ CREATE OR REPLACE DYNAMIC ICEBERG TABLE DATAWAREHOUSE.SILVER.CRM_CUST_INFO
     WAREHOUSE = COMPUTE_WH
     EXTERNAL_VOLUME = 'gcs_iceberg_volume'
     CATALOG = 'SNOWFLAKE'
-    BASE_LOCATION = 'crm/crm_cust_info'
+    BASE_LOCATION = 'silver/crm/crm_cust_info'
 AS
 SELECT 
     cst_id,
@@ -43,7 +43,7 @@ CREATE OR REPLACE DYNAMIC ICEBERG TABLE  DATAWAREHOUSE.SILVER.crm_prd_info
     WAREHOUSE = COMPUTE_WH
     EXTERNAL_VOLUME = 'gcs_iceberg_volume'
     CATALOG = 'SNOWFLAKE'
-    BASE_LOCATION = 'crm/crm_prd_info'
+    BASE_LOCATION = 'silver/crm/crm_prd_info'
 AS
 SELECT
     prd_id,
@@ -71,7 +71,7 @@ CREATE OR REPLACE DYNAMIC ICEBERG TABLE  DATAWAREHOUSE.SILVER.crm_sales_details
     WAREHOUSE = COMPUTE_WH
     EXTERNAL_VOLUME = 'gcs_iceberg_volume'
     CATALOG = 'SNOWFLAKE'
-    BASE_LOCATION = 'crm/crm_sales_details'
+    BASE_LOCATION = 'silver/crm/crm_sales_details'
 AS
 SELECT
     TRIM(sls_ord_num) AS sls_ord_num,
@@ -104,7 +104,7 @@ CREATE OR REPLACE DYNAMIC ICEBERG TABLE  DATAWAREHOUSE.SILVER.erp_cust_az12
     WAREHOUSE = COMPUTE_WH
     EXTERNAL_VOLUME = 'gcs_iceberg_volume'
     CATALOG = 'SNOWFLAKE'
-    BASE_LOCATION = 'erp/erp_cust_az12'
+    BASE_LOCATION = 'silver/erp/erp_cust_az12'
 AS
 SELECT
     CASE 
@@ -130,7 +130,7 @@ CREATE OR REPLACE DYNAMIC ICEBERG TABLE  DATAWAREHOUSE.SILVER.erp_loc_a101
     WAREHOUSE = COMPUTE_WH
     EXTERNAL_VOLUME = 'gcs_iceberg_volume'
     CATALOG = 'SNOWFLAKE'
-    BASE_LOCATION = 'erp/erp_loc_a101'
+    BASE_LOCATION = 'silver/erp/erp_loc_a101'
 AS
 SELECT
     REPLACE(cid, '-', '') AS cid,
@@ -149,7 +149,7 @@ CREATE OR REPLACE DYNAMIC ICEBERG TABLE  DATAWAREHOUSE.SILVER.erp_px_cat_g1v2
     WAREHOUSE = COMPUTE_WH
     EXTERNAL_VOLUME = 'gcs_iceberg_volume'
     CATALOG = 'SNOWFLAKE'
-    BASE_LOCATION = 'erp/erp_px_cat_g1v2'
+    BASE_LOCATION = 'silver/erp/erp_px_cat_g1v2'
 AS
 SELECT 
     id,

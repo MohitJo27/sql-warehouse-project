@@ -65,7 +65,7 @@ CREATE OR REPLACE EXTERNAL VOLUME gcs_iceberg_volume
       (
         NAME = 'gcs-iceberg-storage-location'
         STORAGE_PROVIDER = 'GCS'
-        STORAGE_BASE_URL = 'gcs://snowflake2/silver/'
+        STORAGE_BASE_URL = 'gcs://snowflake2/'
       )
     );
     
