@@ -1,5 +1,5 @@
 # SQL Warehouse Project
-
+ 
 Building a modern data warehouse with **Snowflake** and **GCS**, including ETL, data modeling, and analytics — implemented end-to-end using the **Medallion Architecture** (Bronze → Silver → Gold).
 
 ---
