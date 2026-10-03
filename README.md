@@ -48,7 +48,7 @@ Table-level view of how each object moves from source through Bronze → Silver 
 
 How individual source tables combine to produce the CRM-side Gold objects:
 
-![Data Lineage Model](./docs/Sliver table conn.png)
+![Data Lineage Model](./docs/Slivertableconn.png)
 
 - `erp_px_cat_g1v2` enriches `crm_prd_info` with category/subcategory data → feeds **`dim_product`**.
 - `erp_loc_a101` and `erp_cust_az12` enrich `crm_cust_info` with location and birthdate/gender data → feeds **`dim_customers`**.
